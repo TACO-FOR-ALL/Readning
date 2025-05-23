@@ -29,14 +29,17 @@ def delete_files_in_directory(path: str, extension: str = ".wav", exclude_files:
             os.remove(os.path.join(path, filename))
 
 def secure_filename(name: str) -> str:
+    """Return a file-system safe version of ``name``.
+
+    Non-ASCII characters (e.g. Korean) are preserved while removing
+    characters that may cause issues on most filesystems or URLs.
     """
-    공백·한글·특수문자를 언더스코어/영문자로 치환해
-    파일 시스템과 URL 모두 안전한 문자열로 변환.
-    """
-    name = (
-        unicodedata.normalize("NFKD", name)
-        .encode("ascii", "ignore")
-        .decode("ascii")
-    )
-    name = re.sub(r"[^\w.-]+", "_", name)  # 영문·숫자·._ 만 남김
+
+    # Normalize whitespace and slashes to underscores
+    name = unicodedata.normalize("NFKC", name)
+    name = re.sub(r"[\s/\\]+", "_", name)
+
+    # Allow word characters, dots, dashes and common CJK ranges
+    name = re.sub(r"[^\w\-.가-힣]+", "", name)
+
     return name.strip("._") or "file"

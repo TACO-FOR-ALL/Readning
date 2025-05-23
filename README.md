@@ -46,6 +46,17 @@ uvicorn main:app --host 0.0.0.0 --port 8888 --reload --root-path /proxy/8888
 http://localhost:8000/docs
 ```
 
+### Firebase 환경 변수 설정
+
+Firestore와 Storage 사용을 위해 다음 변수를 설정해야 합니다.
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/serviceAccount.json
+export FIREBASE_BUCKET=your-project-id.appspot.com
+```
+
+`.env` 파일에 위 값을 작성해도 됩니다.
+
 ---
 
 ## 📂 디렉토리 구조
@@ -63,7 +74,7 @@ http://localhost:8000/docs
 │   └── merge_service.py
 ├── utils/
 │   └── file_utils.py
-├── gen_muscis/                  # 생성된 음원 저장 경로
+├── gen_musics/                  # 생성된 음원 저장 경로
 ├── requirements.txt
 └── README.md
 ```
