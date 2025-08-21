@@ -63,7 +63,7 @@ http://localhost:8000/docs
 │   └── merge_service.py
 ├── utils/
 │   └── file_utils.py
-├── gen_muscis/                  # 생성된 음원 저장 경로
+├── gen_musics/                 # 생성된 음원 저장 경로 (OUTPUT_DIR)
 ├── requirements.txt
 └── README.md
 ```
@@ -72,31 +72,20 @@ http://localhost:8000/docs
 
 ## 📡 API 개요
 
-### POST /generate/music
-- .txt 파일 업로드
-- 음악 생성 → 병합
-- 응답으로 다운로드 링크 반환
-- 업로드된 파일명은 `secure_filename` 유틸리티로 정규화되어 한글 등 유니코드
-  문자는 유지하고, 라틴 문자의 악센트는 영문자로 변환합니다.
+### POST `/generate/music-v3-long`
+- 목적: 한 페이지 텍스트의 감정 흐름에 맞춘 긴 BGM 생성(타깃 길이 정확 매칭)
+- 폼 필드:
+  - `file`: `.txt` 업로드 (UTF-8 기본, cp949/latin1 폴백)
+  - `user_id`: 사용자 식별자
+  - `book_title`: 책 제목 (파일 경로용으로 안전하게 정규화됨)
+  - `page`: 1 이상의 정수(예: 1)
+  - `preference`: JSON 배열 문자열(예: `["피아노","잔잔함"]`, 선택)
+  - `target_len`: 최종 목표 길이(초, 기본 240)
+- 응답: `{ message, download_url, page }`
+- 캐싱: 동일 `user_id/book_title/page` 조합이 이미 존재하면 재생성 없이 캐시 URL 반환
 
-### POST /generate/music-pages
-- 여러 페이지가 포함된 `.txt` 파일 업로드
-- 서버에서 자동으로 페이지 단위로 분할 후 각 페이지별 음악을 생성합니다.
-- 응답으로 각 페이지 `ch{n}.wav` 파일의 다운로드 링크 목록을 반환합니다.
-
-### POST /generate/music-v3
-- `page` 번호에 해당하는 텍스트만 선택해 감정 흐름을 나눠 음악을 생성합니다.
-- `preference` 필드에 `["피아노", "잔잔함"]` 같은 JSON 배열을 주면 선호도를 프롬프트에 반영합니다.
-- 잘못된 `page` 값이 전달되면 1 페이지가 기본으로 사용됩니다.
-
-
-### POST /generate/music-v3
-- `page` 번호에 해당하는 텍스트만 선택해 감정 흐름을 나눠 음악을 생성합니다.
-- `preference` 필드에 `["피아노", "잔잔함"]` 같은 JSON 배열을 주면 선호도를 프롬프트에 반영합니다.
-- 잘못된 `page` 값이 전달되면 1 페이지가 기본으로 사용됩니다.
-
-### GET /download
-- 최종 생성된 `final_mix.wav` 다운로드
+### GET `/gen_musics/{user_id}/{book_title}/ch{page}.wav`
+- 생성된 음원 직접 다운로드(스트리밍). `book_title`은 업로드 시의 제목을 `secure_filename`으로 정규화한 값 사용 권장.
 
 ---
 
@@ -108,6 +97,5 @@ http://localhost:8000/docs
 - Dokerlize
 
 ---
-
 
 
