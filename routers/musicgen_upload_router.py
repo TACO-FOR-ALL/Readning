@@ -33,12 +33,6 @@ async def generate_music_long(
     preference: str = Form("[]"),
     target_len: int = Form(240),
 ):
-    """Standard route: generate long BGM for a single page of text.
-
-    - Caches output per user/book/page.
-    - Applies emotional chunking and user preferences to prompts.
-    - Merges and repeats to reach target length.
-    """
 
     # 1) Cache check -------------------------------------------------
     safe_title = secure_filename(book_title)

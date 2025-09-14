@@ -43,19 +43,7 @@ def delete_files_in_directory(path: str, extension: str = ".wav", exclude_files:
             os.remove(os.path.join(path, filename))
 
 def secure_filename(name: str) -> str:
-    """Return a sanitized version of ``name`` safe for use as a filename.
 
-    Unicode characters are preserved whenever possible.  Accented Latin
-    characters are transliterated to their ASCII equivalents while other
-    scripts remain unchanged.  Characters other than letters, numbers,
-    ``.``, ``-`` or ``_`` are replaced with underscores.  If the resulting
-    string is empty, ``"file"`` is returned.
-    """
-
-    # Normalize to NFKD to separate accent marks. Characters that can be
-    # represented in ASCII are transliterated while others (e.g. Korean,
-    # Chinese) are left as-is. This avoids dropping non-Latin characters
-    # completely, unlike the traditional ``ascii``-only approach.
     normalized = unicodedata.normalize("NFKD", name)
     transliterated = []
     for ch in normalized:
